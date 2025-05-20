@@ -1,0 +1,66 @@
+digraph CICDPipeline {
+    rankdir=LR;
+    node [shape=box, style=filled, fillcolor=lightblue];
+    
+    subgraph cluster_0 {
+        label = "Development";
+        style=filled;
+        color=lightgrey;
+        
+        code_change [label="Code\nChange"];
+        git_push [label="Git\nPush"];
+        
+        code_change -> git_push;
+    }
+    
+    subgraph cluster_1 {
+        label = "Continuous Integration";
+        style=filled;
+        color=lightgreen;
+        
+        github_actions [label="GitHub\nActions"];
+        
+        subgraph cluster_2 {
+            label = "Tests";
+            style=filled;
+            color=lightblue;
+            
+            unit_tests [label="Unit\nTests"];
+            integration_tests [label="Integration\nTests"];
+            coverage [label="Coverage\nAnalysis"];
+        }
+        
+        github_actions -> {unit_tests integration_tests coverage};
+    }
+    
+    subgraph cluster_3 {
+        label = "Docker Build";
+        style=filled;
+        color=lightyellow;
+        
+        docker_build [label="Build\nImage"];
+        docker_test [label="Test\nImage"];
+        docker_push [label="Push to\nRegistry"];
+        
+        docker_build -> docker_test -> docker_push;
+    }
+    
+    subgraph cluster_4 {
+        label = "Deployment";
+        style=filled;
+        color=lightpink;
+        
+        staging [label="Staging\nEnvironment"];
+        prod_deploy [label="Production\nDeployment"];
+        monitoring [label="Monitoring"];
+        
+        staging -> prod_deploy -> monitoring;
+    }
+    
+    git_push -> github_actions;
+    {unit_tests integration_tests coverage} -> docker_build;
+    docker_push -> staging;
+    
+    # Feedback loops
+    monitoring -> code_change [style=dashed, color=red, label="Issues"];
+} 

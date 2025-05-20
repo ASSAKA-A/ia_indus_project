@@ -1,0 +1,63 @@
+digraph PreprocessingPipeline {
+    rankdir=LR;
+    node [shape=box, style=filled, fillcolor=lightblue];
+    
+    subgraph cluster_0 {
+        label = "Data Cleaning";
+        style=filled;
+        color=lightgrey;
+        
+        raw_data [label="Raw Data"];
+        remove_duplicates [label="Remove\nDuplicates"];
+        handle_outliers [label="Handle\nOutliers"];
+        standardize_format [label="Standardize\nFormat"];
+        
+        raw_data -> remove_duplicates -> handle_outliers -> standardize_format;
+    }
+    
+    subgraph cluster_1 {
+        label = "Missing Values";
+        style=filled;
+        color=lightpink;
+        
+        missing_values [label="Missing\nValues"];
+        mean_imputation [label="Mean\nImputation"];
+        median_imputation [label="Median\nImputation"];
+        advanced_imputation [label="Advanced\nStrategies"];
+        
+        missing_values -> {mean_imputation median_imputation advanced_imputation};
+    }
+    
+    subgraph cluster_2 {
+        label = "Feature Engineering";
+        style=filled;
+        color=lightgreen;
+        
+        categorical [label="Categorical\nVariables"];
+        numerical [label="Numerical\nVariables"];
+        
+        subgraph cluster_3 {
+            label = "Encoding";
+            onehot [label="One-Hot\nEncoding"];
+            label_encoding [label="Label\nEncoding"];
+            target_encoding [label="Target\nEncoding"];
+            
+            categorical -> {onehot label_encoding target_encoding};
+        }
+        
+        subgraph cluster_4 {
+            label = "Scaling";
+            standard_scaler [label="Standard\nScaler"];
+            robust_scaler [label="Robust\nScaler"];
+            
+            numerical -> {standard_scaler robust_scaler};
+        }
+    }
+    
+    standardize_format -> missing_values;
+    {mean_imputation median_imputation advanced_imputation} -> categorical;
+    {mean_imputation median_imputation advanced_imputation} -> numerical;
+    
+    processed_data [label="Processed\nData", fillcolor=lightgreen];
+    {onehot label_encoding target_encoding standard_scaler robust_scaler} -> processed_data;
+} 

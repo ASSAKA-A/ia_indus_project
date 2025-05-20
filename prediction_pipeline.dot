@@ -1,0 +1,59 @@
+digraph PredictionPipeline {
+    rankdir=LR;
+    node [shape=box, style=filled, fillcolor=lightblue];
+    
+    subgraph cluster_0 {
+        label = "API Request Processing";
+        style=filled;
+        color=lightgrey;
+        
+        input [label="API\nRequest"];
+        validation [label="Input\nValidation"];
+        data_transform [label="Data\nTransformation"];
+        
+        input -> validation -> data_transform;
+    }
+    
+    subgraph cluster_1 {
+        label = "Model Prediction";
+        style=filled;
+        color=lightgreen;
+        
+        freq_model [label="Frequency\nModel"];
+        cost_model [label="Cost\nModel"];
+        
+        subgraph cluster_2 {
+            label = "Predictions";
+            style=filled;
+            color=lightblue;
+            
+            freq_pred [label="Frequency\nPrediction"];
+            cost_pred [label="Cost\nPrediction"];
+            total_cost [label="Total Cost\nCalculation"];
+            
+            {freq_pred cost_pred} -> total_cost;
+        }
+        
+        freq_model -> freq_pred;
+        cost_model -> cost_pred;
+    }
+    
+    subgraph cluster_3 {
+        label = "Response Processing";
+        style=filled;
+        color=lightyellow;
+        
+        format_response [label="Format\nResponse"];
+        add_metadata [label="Add\nMetadata"];
+        api_response [label="API\nResponse"];
+        
+        format_response -> add_metadata -> api_response;
+    }
+    
+    data_transform -> {freq_model cost_model};
+    total_cost -> format_response;
+    
+    # Model Loading
+    model_storage [label="Model\nStorage"];
+    model_storage -> {freq_model cost_model};
+} 

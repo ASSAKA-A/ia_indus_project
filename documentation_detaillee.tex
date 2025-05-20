@@ -1,0 +1,245 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+
+\geometry{margin=2.5cm}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Système de Prédiction des Sinistres en Assurance\\
+\large Une Approche par Machine Learning}
+\author{Documentation Technique Détaillée}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\chapter{Introduction}
+\section{Contexte du Projet}
+Ce projet vise à développer un système de prédiction des sinistres en assurance en utilisant des techniques avancées de machine learning. L'objectif principal est de fournir des estimations précises de la fréquence des sinistres et de leur coût moyen, permettant ainsi une meilleure gestion des risques et une tarification plus précise.
+
+\section{Objectifs}
+\begin{itemize}
+    \item Prédire la fréquence des sinistres avec une haute précision
+    \item Estimer le coût moyen des sinistres
+    \item Calculer le coût total prévisionnel
+    \item Fournir une API REST pour l'intégration avec d'autres systèmes
+    \item Assurer la scalabilité et la maintenabilité du système
+\end{itemize}
+
+\chapter{Architecture Technique}
+\section{Stack Technologique}
+\subsection{Technologies Principales}
+\begin{itemize}
+    \item Python 3.9+
+    \item FastAPI pour l'API REST
+    \item XGBoost pour les modèles de ML
+    \item Docker pour la conteneurisation
+    \item GitHub Actions pour CI/CD
+    \item pytest pour les tests automatisés
+\end{itemize}
+
+\subsection{Structure du Projet}
+\begin{lstlisting}[language=bash]
+.
+├── app.py              # Application FastAPI
+├── preprocessing.py    # Prétraitement des données
+├── train_xgboost.py   # Entraînement du modèle
+├── predict.py         # Module de prédiction
+├── test_api.py        # Tests de l'API
+├── requirements.txt    # Dépendances
+└── Dockerfile         # Configuration Docker
+\end{lstlisting}
+
+\chapter{Modèles de Machine Learning}
+\section{XGBoost}
+\subsection{Caractéristiques du Modèle}
+Le projet utilise XGBoost, un algorithme de gradient boosting optimisé, choisi pour :
+\begin{itemize}
+    \item Sa performance sur les données tabulaires
+    \item Sa gestion efficace des valeurs manquantes
+    \item Sa capacité à gérer un grand nombre de features
+    \item Sa rapidité d'entraînement et d'inférence
+\end{itemize}
+
+\subsection{Features Engineering}
+Le modèle utilise plus de 200 features, incluant :
+\begin{itemize}
+    \item Données géographiques (localisation, altitude, etc.)
+    \item Informations météorologiques (précipitations, températures, etc.)
+    \item Caractéristiques des bâtiments (surface, type, etc.)
+    \item Données démographiques (densité de population, etc.)
+    \item Historique des sinistres
+\end{itemize}
+
+\chapter{Pipeline de Données}
+\section{Prétraitement}
+\subsection{Étapes de Prétraitement}
+\begin{enumerate}
+    \item Nettoyage des données
+    \begin{itemize}
+        \item Suppression des doublons
+        \item Correction des valeurs aberrantes
+        \item Standardisation des formats
+    \end{itemize}
+    
+    \item Gestion des valeurs manquantes
+    \begin{itemize}
+        \item Imputation par la moyenne/médiane
+        \item Utilisation de stratégies avancées selon le contexte
+    \end{itemize}
+    
+    \item Encodage des variables catégorielles
+    \begin{itemize}
+        \item One-Hot Encoding
+        \item Label Encoding
+        \item Target Encoding pour certaines variables
+    \end{itemize}
+    
+    \item Normalisation des features numériques
+    \begin{itemize}
+        \item StandardScaler pour les distributions normales
+        \item RobustScaler pour les données avec outliers
+    \end{itemize}
+\end{enumerate}
+
+\chapter{API REST}
+\section{Endpoints}
+\subsection{Prédiction de Fréquence}
+\begin{lstlisting}[language=python]
+@app.post("/predict_freq")
+async def predict_frequency(data: Dict):
+    # Retourne la fréquence prédite des sinistres
+    return {"freq": predicted_freq}
+\end{lstlisting}
+
+\subsection{Prédiction de Coût}
+\begin{lstlisting}[language=python]
+@app.post("/predict_cm")
+async def predict_cost(data: Dict):
+    # Retourne le coût moyen prédit
+    return {"cm": predicted_cost}
+\end{lstlisting}
+
+\subsection{Prédiction Complète}
+\begin{lstlisting}[language=python]
+@app.post("/predict_sinistre")
+async def predict_complete(data: Dict):
+    # Retourne fréquence, coût et coût total
+    return {
+        "freq": freq,
+        "cm": cost,
+        "total_cost": freq * cost
+    }
+\end{lstlisting}
+
+\chapter{Tests et Qualité}
+\section{Tests Automatisés}
+\subsection{Tests Unitaires}
+\begin{itemize}
+    \item Tests des fonctions de prétraitement
+    \item Tests des modèles de prédiction
+    \item Tests de validation des données
+\end{itemize}
+
+\subsection{Tests d'Intégration}
+\begin{itemize}
+    \item Tests des endpoints API
+    \item Tests de bout en bout
+    \item Tests de performance
+\end{itemize}
+
+\chapter{Déploiement}
+\section{Conteneurisation}
+\subsection{Docker}
+\begin{lstlisting}[language=dockerfile]
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0"]
+\end{lstlisting}
+
+\section{CI/CD}
+\subsection{GitHub Actions}
+\begin{itemize}
+    \item Tests automatiques à chaque push
+    \item Build et push des images Docker
+    \item Déploiement automatique
+\end{itemize}
+
+\chapter{Monitoring et Maintenance}
+\section{Monitoring}
+\subsection{Métriques Surveillées}
+\begin{itemize}
+    \item Temps de réponse API
+    \item Précision des prédictions
+    \item Utilisation des ressources
+    \item Taux d'erreur
+\end{itemize}
+
+\section{Maintenance}
+\subsection{Tâches Régulières}
+\begin{itemize}
+    \item Mise à jour des dépendances
+    \item Réentraînement des modèles
+    \item Analyse des logs
+    \item Optimisation des performances
+\end{itemize}
+
+\chapter{Sécurité}
+\section{Mesures de Sécurité}
+\begin{itemize}
+    \item Validation des entrées
+    \item Gestion des erreurs
+    \item Rate limiting
+    \item Logs sécurisés
+\end{itemize}
+
+\chapter{Perspectives}
+\section{Améliorations Futures}
+\begin{itemize}
+    \item Interface utilisateur web
+    \item Optimisation continue des modèles
+    \item Ajout de nouvelles features
+    \item Analyse approfondie des erreurs
+\end{itemize}
+
+\chapter{Conclusion}
+Le système de prédiction des sinistres combine des technologies modernes et des techniques avancées de machine learning pour fournir des prédictions précises et fiables. Son architecture modulaire et sa suite complète de tests en font une solution robuste et maintenable.
+
+\end{document} 

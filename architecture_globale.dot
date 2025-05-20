@@ -1,0 +1,45 @@
+digraph ArchitectureGlobale {
+    rankdir=TB;
+    node [shape=box, style=filled, fillcolor=lightblue];
+    
+    subgraph cluster_0 {
+        label = "API Layer";
+        style=filled;
+        color=lightgrey;
+        
+        api [label="FastAPI\nApplication"];
+        health [label="Health Check\nEndpoint"];
+        predict_freq [label="Frequency\nPrediction"];
+        predict_cost [label="Cost\nPrediction"];
+        predict_total [label="Total Cost\nPrediction"];
+        
+        api -> {health predict_freq predict_cost predict_total};
+    }
+    
+    subgraph cluster_1 {
+        label = "ML Layer";
+        style=filled;
+        color=lightgreen;
+        
+        preprocess [label="Data\nPreprocessing"];
+        xgboost_freq [label="XGBoost\nFrequency Model"];
+        xgboost_cost [label="XGBoost\nCost Model"];
+        
+        preprocess -> {xgboost_freq xgboost_cost};
+    }
+    
+    subgraph cluster_2 {
+        label = "Data Layer";
+        style=filled;
+        color=lightyellow;
+        
+        input_data [label="Input\nData"];
+        model_storage [label="Model\nStorage"];
+    }
+    
+    input_data -> preprocess;
+    xgboost_freq -> predict_freq;
+    xgboost_cost -> predict_cost;
+    {xgboost_freq xgboost_cost} -> predict_total;
+    model_storage -> {xgboost_freq xgboost_cost};
+} 
