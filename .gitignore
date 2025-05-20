@@ -73,7 +73,6 @@ coverage.xml
 *.h5
 *.pkl
 *.model
-models/
 *.onnx
 *.pt
 *.pth
