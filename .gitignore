@@ -68,6 +68,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+reqs/
 
 # ML specific
 *.h5

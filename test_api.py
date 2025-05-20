@@ -9,7 +9,7 @@ import numpy as np
 from app import app
 
 # Create test client
-client = TestClient(application=app)
+client = TestClient(app)
 
 # Test data from first row of test_input.csv
 TEST_DATA = {

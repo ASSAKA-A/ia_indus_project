@@ -1,12 +1,11 @@
-fastapi==0.109.2
-uvicorn==0.27.1
-pandas==2.2.0
-numpy==1.26.3
-scikit-learn==1.4.0
-xgboost==2.0.3
-joblib==1.3.2
-pydantic==2.6.1
-optuna
-pytest
+fastapi==0.115.12
+joblib==1.5.0
+numpy==2.2.6
+pandas==2.2.3
+pydantic==2.11.4
+pytest==8.3.5
+scikit_learn==1.6.1
+uvicorn==0.34.2
+xgboost==3.0.1
 pytest-cov
-httpx # Pour les tests FastAPI
+httpx
