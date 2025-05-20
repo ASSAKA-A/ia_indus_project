@@ -72,7 +72,6 @@ coverage.xml
 # ML specific
 *.h5
 *.pkl
-*.model
 *.onnx
 *.pt
 *.pth
